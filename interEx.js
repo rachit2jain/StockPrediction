@@ -143,6 +143,8 @@ server.listen(PORT, function(){
 									"order_type":"market"}
 				});
 			}
+			console.log(output.fills);
+
 		}
 	}
 });
