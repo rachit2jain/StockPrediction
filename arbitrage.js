@@ -2,8 +2,6 @@
 var http = require('http');
 var syncRequest = require('sync-request');
 
-// var MongoClient = require('mongodb').MongoClient;
-
 //Lets define a port we want to listen to
 const PORT=8080; 
 const TEAM_UID="PkkYempGWJeQr3AFYzcOWA";
@@ -15,13 +13,6 @@ function handleRequest(request, response){
 
 //Create a server
 var server = http.createServer(handleRequest);
-
-// Connect to the db
-// MongoClient.connect("mongodb://localhost:27017/stockPredict", function(err, db) {
-// if(!err) {
-//     console.log("We are connected");
-// }
-// });
 
 //Lets start our server
 server.listen(PORT, function(){
