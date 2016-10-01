@@ -1,31 +1,23 @@
 var _ = require('lodash');
 var http = require('http');
 var syncRequest = require('sync-request');
-const PORT=process.env.PORT; 
-const TEAM_UID="TtH8CwcTEcwcpP7BOoZBzg";
 
-//We need a function which handles requests and send response
+callback = function(response){
+    // Continuously update stream with data
+    console.log("Test", response);
+}
+const PORT = process.env.PORT; 
+const TEAM_UID="PkkYempGWJeQr3AFYzcOWA";
+
 function handleRequest(request, response){
     response.end('It Works!! Path Hit: ' + request.url);
 }
 
-//Create a server
 var server = http.createServer(handleRequest);
 
-// Connect to the db
-// MongoClient.connect("mongodb://localhost:27017/stockPredict", function(err, db) {
-// if(!err) {
-//     console.log("We are connected");
-// }
-// });
-
-//Lets start our server
 server.listen(PORT, function(){
-    //Callback triggered when server is successfully listening. Hurray!
-
-
 	function requestToApi(apiFunctions){
-	    if (apiFunctions.apiCall === 'orders'){
+		if (apiFunctions.apiCall === 'orders'){
 
 			apiFunctions.orderTicket.team_uid = TEAM_UID;
 			apiFunctions.orderTicket.symbol = apiFunctions.symbol;
@@ -43,9 +35,9 @@ server.listen(PORT, function(){
 
 			return JSON.parse(request.getBody());
 
-		    } else {
+		} else {
 			if (apiFunctions.symbol) {
-			    apiFunctions.apiCall = apiFunctions.apiCall+'/'+apiFunctions.symbol;
+				apiFunctions.apiCall = apiFunctions.apiCall+'/'+apiFunctions.symbol;
 			}
 
 			var request = syncRequest(
@@ -55,26 +47,27 @@ server.listen(PORT, function(){
 
 			return JSON.parse(request.getBody());
 
-		    }
 		}
+	}
+	var symbol = "0388";
 
-		while(true){
+	while(true){
 		var stockJSONex1 = requestToApi({
-			'apiCall':'market_data',
-			'symbol': '0386',
-			'exchange': 'exchange1'
+		'apiCall':'market_data',
+		'symbol': symbol,
+		'exchange': 'exchange1'
 		});
 
 		var stockJSONex2 = requestToApi({
-			'apiCall':'market_data',
-			'symbol': '0386',
-			'exchange': 'exchange2'
+		'apiCall':'market_data',
+		'symbol': symbol,
+		'exchange': 'exchange2'
 		});
 
 		var stockJSONex3 = requestToApi({
-			'apiCall':'market_data',
-			'symbol': '0386',
-			'exchange': 'exchange3'
+		'apiCall':'market_data',
+		'symbol': symbol,
+		'exchange': 'exchange3'
 		});
 
 
@@ -91,12 +84,12 @@ server.listen(PORT, function(){
 			//console.log("Sell: %j\n", value.sell);
 			var min = 10000000;
 			_.forEach(value.sell, function(key, val){
-				if(val < min){
-					min = val;
+				if(parseFloat(val) < min){
+					min = parseFloat(val);
 				}
 			});
 
-			if(min < minPrice){
+			if(min < parseFloat(minPrice)){
 				minPrice = min;
 				exchangeOfMin = i;
 			}
@@ -110,17 +103,17 @@ server.listen(PORT, function(){
 		var maxPrice = -10;
 		var exchangeOfMax = 4;
 		var i = 1;
-
+		var max;
 		_.forEach(stockData, function(value) {
 			//console.log("Buy: %j\n", value.buy);
-			var max = -10;
+			max = -10;
 			_.forEach(value.buy, function(key, val){
-				if(val > max){
-					max = val;
+				if(parseFloat(val) > max){
+					max = parseFloat(val);
 				}
 			});
 
-			if(max > maxPrice){
+			if(max > parseFloat(maxPrice)){
 				maxPrice = max;
 				exchangeOfMax = i;
 			}
@@ -137,31 +130,56 @@ server.listen(PORT, function(){
 			var quantity = stockData[exchangeOfMax-1].buy[maxPrice];
 		}
 
-		console.log("Buy "+quantity+ " from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax);
-		console.log("Buy "+minPrice+ " from exchange "+ exchangeOfMin +" and sell at " + maxPrice);
+		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null){
+			console.log("Buy "+quantity+ " at $"+minPrice+" from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax+" sell at $" + maxPrice );
 
-		
-		var output = requestToApi({
-		        'apiCall':'orders',
-		        'symbol': '0005',
-		        'exchange': 'exchange'+exchangeOfMin,
-		        'orderTicket': {"side": "buy",
-		                        "qty":quantity,
-		                        "order_type":"market"}
-		    });
+			var output = requestToApi({
+				'apiCall':'orders',
+				'symbol': symbol,
+				'exchange': 'exchange'+exchangeOfMin,
+				'orderTicket': {"side": "buy",
+								"qty":quantity,
+								"order_type":"market"}
+			});
+			
+			//console.log(output);
+			
+			
+			
+			if(output.filled_qty > 0){
+				var output2 = requestToApi({
+					'apiCall':'orders',
+					'symbol': symbol,
+					'exchange': 'exchange'+exchangeOfMax,
+					'orderTicket': {"side": "sell",
+									"qty":output.filled_qty,
+									"order_type":"market"}
+				});
+			}
 
-		    console.log(output);
-
-			var output2 = requestToApi({
-		        'apiCall':'orders',
-		        'symbol': '0005',
-		        'exchange': 'exchange'+exchangeOfMax,
-		        'orderTicket': {"side": "sell",
-		                        "qty":quantity,
-		                        "order_type":"market"}
-		    });
-
-		    console.log(output2);
+			//console.log(output2);
+			
 		}
+	}
 });
-
+/* { id: 'e360ce8e-450e-4308-a885-6dd3d7729ef0',
+  team_uid: 'PkkYempGWJeQr3AFYzcOWA',
+  symbol: '0005',
+  side: 'buy',
+  qty: 1400,
+  order_type: 'market',
+  price: null,
+  status: 'FILLED',
+  filled_qty: 1400,
+  fills: [ { price: 77.05, qty: 1400 } ] }
+{ id: '843f2f0a-f219-482b-aea1-c5f98cea55bc',
+  team_uid: 'PkkYempGWJeQr3AFYzcOWA',
+  symbol: '0005',
+  side: 'sell',
+  qty: 1400,
+  order_type: 'market',
+  price: null,
+  status: 'FILLED',
+  filled_qty: 1400,
+  fills: [ { price: 77.15, qty: 1400 } ] } */
+ 
