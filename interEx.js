@@ -130,7 +130,7 @@ server.listen(PORT, function(){
 			var quantity = stockData[exchangeOfMax-1].buy[maxPrice];
 		}
 
-		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null && quantity>0){
+		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null && quantity>0 && quantity < 400) {
 			console.log("Buy "+quantity+ " at $"+minPrice+" from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax+" sell at $" + maxPrice );
 
 			var output = requestToApi({
