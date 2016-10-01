@@ -6,7 +6,6 @@ var _ = require('lodash');
 
 var stockJSONex1 = {"symbol": "0001",
   "buy": {
-    "0.0": 1000,
     "101.2": 210,
     "101.15": 140,
     "101.1": 93,
@@ -55,4 +54,65 @@ var stockJSONex3 =  {"symbol": "0001",
     "100.5": 35
   }
 };
+
+var stockData = [stockJSONex1, stockJSONex2, stockJSONex3];
+
+//console.log("Session: %j", _.toPairs(stockJSONex1.buy));
+//console.log(stockData);
+
+var minPrice = 10000000;
+var exchangeOfMin = 4;
+
+var i = 1;
+_.forEach(stockData, function(value) {
+	//console.log("%j\n", value.sell);
+	var min = 10000000;
+	_.forEach(value.sell, function(key, val){
+		if(val < min){
+			min = val;
+		}
+	});
+	
+	if(min < minPrice){
+		minPrice = min;
+		exchangeOfMin = i;
+	}
+	i++;
+});
+
+console.log(minPrice);
+console.log(stockData[exchangeOfMin-1].sell[minPrice]);
+console.log(exchangeOfMin);
+
+var maxPrice = -10;
+var exchangeOfMax = 4;
+var i = 1;
+
+_.forEach(stockData, function(value) {
+	//console.log("%j\n", value.buy);
+	var max = -10;
+	_.forEach(value.buy, function(key, val){
+		if(val > max){
+			max = val;
+		}
+	});
+	
+	if(max > maxPrice){
+		maxPrice = max;
+		exchangeOfMax = i;
+	}
+	i++;
+});
+
+console.log(maxPrice);
+console.log(stockData[exchangeOfMax-1].buy[maxPrice]);
+console.log(exchangeOfMax);
+
+if( stockData[exchangeOfMax-1].buy[maxPrice] > stockData[exchangeOfMin-1].sell[minPrice]){
+	var quantity = stockData[exchangeOfMin-1].sell[minPrice];
+}else{
+	var quantity = stockData[exchangeOfMax-1].buy[maxPrice];
+}
+
+console.log("Buy "+quantity+ " from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax);
 
