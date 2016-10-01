@@ -123,28 +123,38 @@ server.listen(PORT, function(){
 
 		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null && quantity>0 && quantity < 400) {
 			console.log("Buy "+quantity+ " at $"+minPrice+" from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax+" sell at $" + maxPrice );
-
+				
 			 output = requestToApi({
 				'apiCall':'orders',
 				'symbol': symbol,
 				'exchange': 'exchange'+exchangeOfMin,
 				'orderTicket': {"side": "buy",
-								"qty":quantity,
+								"qty":1,
 								"order_type":"market"}
-			});
+				});
 			console.log(output.fills);
-			if(output.filled_qty > 0){
-				 output2 = requestToApi({
+			if(output.fills[0].price < maxPrice){
+				output = requestToApi({
 					'apiCall':'orders',
 					'symbol': symbol,
-					'exchange': 'exchange'+exchangeOfMax,
-					'orderTicket': {"side": "sell",
-									"qty":output.filled_qty,
+					'exchange': 'exchange'+exchangeOfMin,
+					'orderTicket': {"side": "buy",
+									"qty":quantity-1,
 									"order_type":"market"}
-				});
+					
+					});
+			
+				if(output.filled_qty > 0){
+					 output2 = requestToApi({
+						'apiCall':'orders',
+						'symbol': symbol,
+						'exchange': 'exchange'+exchangeOfMax,
+						'orderTicket': {"side": "sell",
+										"qty":output.filled_qty,
+										"order_type":"market"}
+					});
+				}
 			}
-			console.log(output.fills);
-
 		}
 	}
 });
