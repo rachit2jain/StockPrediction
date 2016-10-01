@@ -70,11 +70,11 @@ function requestToApi(apiFunctions){
     if (apiFunctions.apiCall === 'orders'){
     	apiFunctions.orderTicket.team_uid = TEAM_UID;
         apiFunctions.orderTicket.symbol = apiFunctions.symbol;
-    	var request = unirest.post('http://cis2016-'+apiFunctions.exchange+'.herokuapp.com/api/'+apiFunctions.apiCall)
-    	.headers({'Content-Type': 'application/json'})
-    	.send(apiFunctions.orderTicket)
-    	.end(function (response) {
-    		return response;
+    	var request = unirest.post('http://cis2016-'+apiFunctions.exchange+'.herokuapp.com/api/'+apiFunctions.apiCall);
+    	request.headers({'Content-Type': 'application/json'});
+    	request.send(apiFunctions.orderTicket);
+    	request.end(function (response) {
+    		callback(response.body);
 		  // console.log(response.body);
 		  // console.log(request);
 		});

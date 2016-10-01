@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Sourav2441996/StockPrediction/issues"
   },
-  "homepage": "https://github.com/Sourav2441996/StockPrediction#readme"
+  "homepage": "https://github.com/Sourav2441996/StockPrediction#readme",
+  "dependencies": {
+    "lodash": "^4.16.2"
+  }
 }
