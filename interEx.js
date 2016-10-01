@@ -49,7 +49,7 @@ server.listen(PORT, function(){
 
 		}
 	}
-	var symbol = "3988";
+	var symbol = "0386";
 
 	while(true){
 		var stockJSONex1 = requestToApi({
@@ -130,7 +130,7 @@ server.listen(PORT, function(){
 			var quantity = stockData[exchangeOfMax-1].buy[maxPrice];
 		}
 
-		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null){
+		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null && quantity>0){
 			console.log("Buy "+quantity+ " at $"+minPrice+" from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax+" sell at $" + maxPrice );
 
 			var output = requestToApi({
