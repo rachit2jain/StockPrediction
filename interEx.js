@@ -2,6 +2,41 @@ var _ = require('lodash');
 var http = require('http');
 var syncRequest = require('sync-request');
 
+const PORT=8080; 
+const TEAM_UID="PkkYempGWJeQr3AFYzcOWA";
+
+//We need a function which handles requests and send response
+function handleRequest(request, response){
+    response.end('It Works!! Path Hit: ' + request.url);
+}
+
+//Create a server
+var server = http.createServer(handleRequest);
+
+// Connect to the db
+// MongoClient.connect("mongodb://localhost:27017/stockPredict", function(err, db) {
+// if(!err) {
+//     console.log("We are connected");
+// }
+// });
+
+//Lets start our server
+server.listen(PORT, function(){
+    //Callback triggered when server is successfully listening. Hurray!
+    console.log("Server listening on: http://localhost:%s", PORT);
+ 	var output = requestToApi({
+        'apiCall':'market_data',
+        'symbol': '0001',
+        'exchange': 'exchange1'/*,
+        'orderTicket': {"side": "buy",
+                        "qty":1,
+                        "order_type":"market"}*/
+    });
+
+    console.log(output);
+});
+
+
 callback = function(response){
     // Continuously update stream with data
     console.log("Test", response);
