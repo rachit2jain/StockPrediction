@@ -2,7 +2,7 @@ var _ = require('lodash');
 var http = require('http');
 var syncRequest = require('sync-request');
 const PORT=process.env.PORT; 
-const TEAM_UID="PkkYempGWJeQr3AFYzcOWA";
+const TEAM_UID="TtH8CwcTEcwcpP7BOoZBzg";
 
 //We need a function which handles requests and send response
 function handleRequest(request, response){
