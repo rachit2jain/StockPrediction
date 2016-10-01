@@ -144,7 +144,7 @@ server.listen(PORT, function(){
 					
 					});
 				
-				console.log("Bought at " + out.fills);
+				console.log("Bought at %j", out.fills);
 
 				if(output.filled_qty > 0){
 					 output2 = requestToApi({
