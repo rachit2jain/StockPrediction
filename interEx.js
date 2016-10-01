@@ -132,7 +132,7 @@ server.listen(PORT, function(){
 								"qty":quantity,
 								"order_type":"market"}
 			});
-	
+			console.log(output.fills);
 			if(output.filled_qty > 0){
 				 output2 = requestToApi({
 					'apiCall':'orders',
