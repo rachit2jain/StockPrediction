@@ -1,5 +1,6 @@
 //Lets require/import the HTTP module
 var http = require('http');
+var unirest =require('unirest')
 
 // var MongoClient = require('mongodb').MongoClient;
 
@@ -27,36 +28,32 @@ server.listen(PORT, function(){
     //Callback triggered when server is successfully listening. Hurray!
     console.log("Server listening on: http://localhost:%s", PORT);
     // requestToTeam();
-    requestToApi({
-        'apiCall':'orders',
+ 	requestToApi({
+        'apiCall':'market_data',
         'symbol': '0001',
-        'exchange': 'exchange2',
+        'exchange': 'exchange1',
         'orderTicket': {"side": "buy",
                         "qty":1,
                         "order_type":"market"}
-    }
-        );
+    });
 });
 
 callback = function(response){
     // Continuously update stream with data
-    var body = '';
-    response.on('data', function(d) {
-        body += d;
-    });
-    response.on('end', function() {
-        // console.log(body);
-        var parsed = JSON.parse(body);
-        console.log(parsed);
-    });
+    console.log("Test", response);
 }
 
 function requestToTeam() {
-    return http.get({
-        host: 'cis2016-teamtracker.herokuapp.com',
-        path: '/api/teams/'+TEAM_UID
-    }, callback);
+    var request = unirest.get('http://cis2016-teamtracker.herokuapp.com/api/teams/'+TEAM_UID);
+    request.headers({'Content-Type': 'application/json'});
+	request.end(function (response) {
+		// return response;
+	  callback(response.body);
+	  // return response;
+	});
 }
+
+
 /**
  * apiFunctions:
  * exchange: Exchange 1/2/3
@@ -67,26 +64,31 @@ function requestToTeam() {
                 "order_type":"market"}
  * 
  */
+
+
 function requestToApi(apiFunctions){
     if (apiFunctions.apiCall === 'orders'){
-        apiFunctions.orderTicket.team_uid = TEAM_UID;
+    	apiFunctions.orderTicket.team_uid = TEAM_UID;
         apiFunctions.orderTicket.symbol = apiFunctions.symbol;
-        console.log(apiFunctions );
-        return http.request({
-            host: 'cis2016-'+apiFunctions.exchange+'.herokuapp.com',
-            path: '/api/'+apiFunctions.apiCall,
-            body: apiFunctions.orderTicket,
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'}
-        }, callback)
+    	var request = unirest.post('http://cis2016-'+apiFunctions.exchange+'.herokuapp.com/api/'+apiFunctions.apiCall)
+    	.headers({'Content-Type': 'application/json'})
+    	.send(apiFunctions.orderTicket)
+    	.end(function (response) {
+    		return response;
+		  // console.log(response.body);
+		  // console.log(request);
+		});
+
     }
     else{
         if (apiFunctions.symbol)
             apiFunctions.apiCall = apiFunctions.apiCall+'/'+apiFunctions.symbol;
-        console.log(apiFunctions);
-        return http.get({
-            host: 'cis2016-'+apiFunctions.exchange+'.herokuapp.com',
-            path: '/api/'+apiFunctions.apiCall
-        }, callback)
+        var request = unirest.get('http://cis2016-'+apiFunctions.exchange+'.herokuapp.com/api/'+apiFunctions.apiCall);
+	    request.headers({'Content-Type': 'application/json'});
+    	request.end(function (response) {
+    		// return response;
+		  callback(response.body);
+		  // return response;
+		});
     }
 }
