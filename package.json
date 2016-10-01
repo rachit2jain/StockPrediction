@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Sourav2441996/StockPrediction#readme",
   "dependencies": {
-    "lodash": "^4.16.2"
+    "lodash": "^4.16.2",
+    "unirest": "^0.5.1"
   }
 }
