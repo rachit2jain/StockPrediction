@@ -140,27 +140,28 @@ server.listen(PORT, function(){
 		console.log("Buy "+quantity+ " from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax);
 		console.log("Buy "+minPrice+ " from exchange "+ exchangeOfMin +" and sell at " + maxPrice);
 
-		// var output = requestToApi({
-		//         'apiCall':'orders',
-		//         'symbol': '0005',
-		//         'exchange': 'exchange'+exchangeOfMin,
-		//         'orderTicket': {"side": "buy",
-		//                         "qty":quantity,
-		//                         "order_type":"market"}
-		//     });
+		
+		var output = requestToApi({
+		        'apiCall':'orders',
+		        'symbol': '0005',
+		        'exchange': 'exchange'+exchangeOfMin,
+		        'orderTicket': {"side": "buy",
+		                        "qty":quantity,
+		                        "order_type":"market"}
+		    });
 
-		//     console.log(output);
+		    console.log(output);
 
-		// 	var output2 = requestToApi({
-		//         'apiCall':'orders',
-		//         'symbol': '0005',
-		//         'exchange': 'exchange'+exchangeOfMax,
-		//         'orderTicket': {"side": "sell",
-		//                         "qty":quantity,
-		//                         "order_type":"market"}
-		//     });
+			var output2 = requestToApi({
+		        'apiCall':'orders',
+		        'symbol': '0005',
+		        'exchange': 'exchange'+exchangeOfMax,
+		        'orderTicket': {"side": "sell",
+		                        "qty":quantity,
+		                        "order_type":"market"}
+		    });
 
-		    // console.log(output2);
+		    console.log(output2);
 		}
 });
 
