@@ -50,8 +50,18 @@ server.listen(PORT, function(){
 		}
 	}
 	var symbol = "0386";
-
+	
 	while(true){
+		var minPrice = 10000000;
+		var exchangeOfMin = 4;
+
+		var i = 1;
+		var maxPrice = -10;
+		var exchangeOfMax = 4;
+		var max;
+		var quantity;
+		var output;
+		var output2;
 		var stockJSONex1 = requestToApi({
 		'apiCall':'market_data',
 		'symbol': symbol,
@@ -72,14 +82,7 @@ server.listen(PORT, function(){
 
 
 		var stockData = [stockJSONex1, stockJSONex2, stockJSONex3];
-
-		//console.log("Session: %j", _.toPairs(stockJSONex1.buy));
-		//console.log(stockData);
-
-		var minPrice = 10000000;
-		var exchangeOfMin = 4;
-
-		var i = 1;
+		
 		_.forEach(stockData, function(value) {
 			//console.log("Sell: %j\n", value.sell);
 			var min = 10000000;
@@ -88,22 +91,15 @@ server.listen(PORT, function(){
 					min = parseFloat(val);
 				}
 			});
-
 			if(min < parseFloat(minPrice)){
 				minPrice = min;
 				exchangeOfMin = i;
 			}
 			i++;
 		});
-
-		// console.log(minPrice);
-		// console.log(stockData[exchangeOfMin-1].sell[minPrice]);
-		// console.log(exchangeOfMin);
-
-		var maxPrice = -10;
-		var exchangeOfMax = 4;
-		var i = 1;
-		var max;
+		
+		i=1;
+		
 		_.forEach(stockData, function(value) {
 			//console.log("Buy: %j\n", value.buy);
 			max = -10;
@@ -119,21 +115,16 @@ server.listen(PORT, function(){
 			}
 			i++;
 		});
-
-		// console.log(maxPrice);
-		// console.log(stockData[exchangeOfMax-1].buy[maxPrice]);
-		// console.log(exchangeOfMax);
-
 		if( stockData[exchangeOfMax-1].buy[maxPrice] > stockData[exchangeOfMin-1].sell[minPrice]){
-			var quantity = stockData[exchangeOfMin-1].sell[minPrice];
+			quantity = stockData[exchangeOfMin-1].sell[minPrice];
 		}else{
-			var quantity = stockData[exchangeOfMax-1].buy[maxPrice];
+			quantity = stockData[exchangeOfMax-1].buy[maxPrice];
 		}
 
 		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null && quantity>0 && quantity < 400) {
 			console.log("Buy "+quantity+ " at $"+minPrice+" from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax+" sell at $" + maxPrice );
 
-			var output = requestToApi({
+			 output = requestToApi({
 				'apiCall':'orders',
 				'symbol': symbol,
 				'exchange': 'exchange'+exchangeOfMin,
@@ -141,13 +132,9 @@ server.listen(PORT, function(){
 								"qty":quantity,
 								"order_type":"market"}
 			});
-			
-			//console.log(output);
-			
-			
-			
+	
 			if(output.filled_qty > 0){
-				var output2 = requestToApi({
+				 output2 = requestToApi({
 					'apiCall':'orders',
 					'symbol': symbol,
 					'exchange': 'exchange'+exchangeOfMax,
@@ -156,30 +143,7 @@ server.listen(PORT, function(){
 									"order_type":"market"}
 				});
 			}
-
-			//console.log(output2);
-			
 		}
 	}
 });
-/* { id: 'e360ce8e-450e-4308-a885-6dd3d7729ef0',
-  team_uid: 'PkkYempGWJeQr3AFYzcOWA',
-  symbol: '0005',
-  side: 'buy',
-  qty: 1400,
-  order_type: 'market',
-  price: null,
-  status: 'FILLED',
-  filled_qty: 1400,
-  fills: [ { price: 77.05, qty: 1400 } ] }
-{ id: '843f2f0a-f219-482b-aea1-c5f98cea55bc',
-  team_uid: 'PkkYempGWJeQr3AFYzcOWA',
-  symbol: '0005',
-  side: 'sell',
-  qty: 1400,
-  order_type: 'market',
-  price: null,
-  status: 'FILLED',
-  filled_qty: 1400,
-  fills: [ { price: 77.15, qty: 1400 } ] } */
- 
+
