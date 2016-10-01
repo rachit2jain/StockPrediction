@@ -4,8 +4,7 @@
   "description": "",
   "main": "predictStock.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "rachit": "node ./interEx.js"
+    "start": "node ./interEx.js"
   },
   "repository": {
     "type": "git",
