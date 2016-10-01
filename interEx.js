@@ -7,6 +7,8 @@ callback = function(response){
     console.log("Test", response);
 }
 
+const TEAM_UID="PkkYempGWJeQr3AFYzcOWA";
+
 function requestToApi(apiFunctions){
     if (apiFunctions.apiCall === 'orders'){
 
@@ -40,21 +42,23 @@ function requestToApi(apiFunctions){
 
     }
 }
+
+while(true){
 var stockJSONex1 = requestToApi({
 	'apiCall':'market_data',
-	'symbol': '0001',
+	'symbol': '0005',
 	'exchange': 'exchange1'
 });
 
 var stockJSONex2 = requestToApi({
 	'apiCall':'market_data',
-	'symbol': '0001',
+	'symbol': '0005',
 	'exchange': 'exchange2'
 });
 
 var stockJSONex3 = requestToApi({
 	'apiCall':'market_data',
-	'symbol': '0001',
+	'symbol': '0005',
 	'exchange': 'exchange3'
 });
 
@@ -62,14 +66,14 @@ var stockJSONex3 = requestToApi({
 var stockData = [stockJSONex1, stockJSONex2, stockJSONex3];
 
 //console.log("Session: %j", _.toPairs(stockJSONex1.buy));
-console.log(stockData);
+//console.log(stockData);
 
 var minPrice = 10000000;
 var exchangeOfMin = 4;
 
 var i = 1;
 _.forEach(stockData, function(value) {
-	//console.log("%j\n", value.sell);
+	//console.log("Sell: %j\n", value.sell);
 	var min = 10000000;
 	_.forEach(value.sell, function(key, val){
 		if(val < min){
@@ -93,7 +97,7 @@ var exchangeOfMax = 4;
 var i = 1;
 
 _.forEach(stockData, function(value) {
-	//console.log("%j\n", value.buy);
+	//console.log("Buy: %j\n", value.buy);
 	var max = -10;
 	_.forEach(value.buy, function(key, val){
 		if(val > max){
@@ -121,4 +125,26 @@ if( stockData[exchangeOfMax-1].buy[maxPrice] > stockData[exchangeOfMin-1].sell[m
 console.log("Buy "+quantity+ " from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax);
 console.log("Buy "+minPrice+ " from exchange "+ exchangeOfMin +" and sell at " + maxPrice);
 
+var output = requestToApi({
+        'apiCall':'orders',
+        'symbol': '0005',
+        'exchange': 'exchange'+exchangeOfMin,
+        'orderTicket': {"side": "buy",
+                        "qty":quantity,
+                        "order_type":"market"}
+    });
+
+    console.log(output);
+	
+	var output2 = requestToApi({
+        'apiCall':'orders',
+        'symbol': '0005',
+        'exchange': 'exchange'+exchangeOfMax,
+        'orderTicket': {"side": "sell",
+                        "qty":quantity,
+                        "order_type":"market"}
+    });
+
+    console.log(output2);
+}
 
