@@ -1,0 +1,19 @@
+{
+  "name": "stockprediction",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sourav2441996/StockPrediction.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sourav2441996/StockPrediction/issues"
+  },
+  "homepage": "https://github.com/Sourav2441996/StockPrediction#readme"
+}
