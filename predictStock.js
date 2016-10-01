@@ -1,6 +1,9 @@
 //Lets require/import the HTTP module
 var http = require('http');
 
+// Retrieve
+var MongoClient = require('mongodb').MongoClient;
+
 //Lets define a port we want to listen to
 const PORT=8080; 
 
@@ -16,4 +19,11 @@ var server = http.createServer(handleRequest);
 server.listen(PORT, function(){
     //Callback triggered when server is successfully listening. Hurray!
     console.log("Server listening on: http://localhost:%s", PORT);
+    // Connect to the db
+    MongoClient.connect("mongodb://localhost:27017/exampleDb", function(err, db) {
+    if(!err) {
+        console.log("We are connected");
+    }
+    });
 });
+
