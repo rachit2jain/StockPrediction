@@ -49,7 +49,7 @@ server.listen(PORT, function(){
 
 		}
 	}
-	var symbol = "0388";
+	var symbol = "3988";
 
 	while(true){
 		var stockJSONex1 = requestToApi({
