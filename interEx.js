@@ -121,7 +121,7 @@ server.listen(PORT, function(){
 			quantity = stockData[exchangeOfMax-1].buy[maxPrice];
 		}
 
-		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null && quantity>0 && quantity < 400) {
+		if(parseFloat(maxPrice) > parseFloat(minPrice) && quantity != null && quantity>0) {
 			console.log("Buy "+quantity+ " at $"+minPrice+" from exchange "+ exchangeOfMin +" and sell to " + exchangeOfMax+" sell at $" + maxPrice );
 				
 			 output = requestToApi({
@@ -134,7 +134,7 @@ server.listen(PORT, function(){
 				});
 			console.log(output.fills);
 			if(output.fills[0].price < maxPrice){
-				output = requestToApi({
+				out = requestToApi({
 					'apiCall':'orders',
 					'symbol': symbol,
 					'exchange': 'exchange'+exchangeOfMin,
@@ -143,7 +143,9 @@ server.listen(PORT, function(){
 									"order_type":"market"}
 					
 					});
-			
+				
+				console.log("Bought at " + out.fills);
+
 				if(output.filled_qty > 0){
 					 output2 = requestToApi({
 						'apiCall':'orders',
@@ -153,7 +155,9 @@ server.listen(PORT, function(){
 										"qty":output.filled_qty,
 										"order_type":"market"}
 					});
+					console.log("sold at " + output2.price);
 				}
+			
 			}
 		}
 	}
